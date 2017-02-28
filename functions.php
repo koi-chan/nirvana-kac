@@ -27,7 +27,13 @@ function register_cpt_members_introduction() {
 	$args = array(
 		'labels' => $labels,
 		'hierarchical' => true,
-		'supports' => array('title', 'thumbnail', 'custom-fields' ),
+		'supports' => array(
+			'title',
+			'thumbnail',
+			'custom-fields',
+			'author',
+			'revisions'
+		),
 		'taxonomies' => array( 'category' ),
 
 		'public' => true,
