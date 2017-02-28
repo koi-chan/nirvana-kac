@@ -56,7 +56,7 @@ function member_profile($output_name = false) {
 <table>
 <?php if($output_name): ?>
 <tr>
-	<th colspan="2"><?php echo get_the_title($post->ID); ?></th>
+	<th colspan="2"><?= get_the_title($post->ID); ?></th>
 </tr>
 <?php endif; ?>
 <tr>
@@ -67,25 +67,25 @@ function member_profile($output_name = false) {
 	<td colspan="2"><dl>
 <?php endif; ?>
 		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?><dt>役職</dt>
-		<dd><?php echo get_post_meta($post->ID, 'position', true); ?></dd><?php endif; ?>
+		<dd><?= get_post_meta($post->ID, 'position', true); ?></dd><?php endif; ?>
 
 		<dt>学部・学年</dt>
 		<dd>
-		<?php echo get_post_meta($post->ID, 'gakubu', true); ?>
-		<?php echo get_post_meta($post->ID, 'grade', true); ?>年
+		<?= get_post_meta($post->ID, 'gakubu', true); ?>
+		<?= get_post_meta($post->ID, 'grade', true); ?>年
 		</dd>
 
 		<dt>趣味</dt>
 		<dd>
-		<?php echo get_post_meta($post->ID, 'hobby', true); ?>
+		<?= get_post_meta($post->ID, 'hobby', true); ?>
 		</dd>
 		<dt>山岳部とは(一言)</dt>
 		<dd>
-		<?php echo get_post_meta($post->ID, 'whats club', true); ?>
+		<?= get_post_meta($post->ID, 'whats club', true); ?>
 		</dd>
 		<dt>目標</dt>
 		<dd>
-		<?php echo get_post_meta($post->ID, 'aim', true); ?>
+		<?= get_post_meta($post->ID, 'aim', true); ?>
 		</dd>
 	</dl></td>
 </tr>
