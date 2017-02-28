@@ -10,7 +10,7 @@ if ( $loop->have_posts() ) while ( $loop->have_posts() ) : $loop->the_post();
 
 <?php #					<div class="entry-content"> ?>
 						<?php member_profile(true); ?>
-						<?php the_content(); ?>
+						<?php //the_content(); ?>
 						<?php wp_link_pages( array( 'before' => '<div class="page-link"><span>' . __( 'Pages:', 'nirvana' ), 'after' => '</span></div>' ) ); ?>
 <?php #					</div><!-- .entry-content --> ?>
 <?php /*
