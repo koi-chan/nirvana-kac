@@ -61,7 +61,7 @@ function member_profile($output_name = false) {
 <?php endif; ?>
 <tr>
 <?php if(get_post_meta($post->ID, 'picture', true)): ?>
-	<td class="thumbnail"><img src="<?= wp_get_attachment_url(get_post_meta($post->ID, 'picture', true)) ?>" /></td>
+	<td class="thumbnail"><img src="<?= wp_get_attachment_url(get_post_meta($post->ID, 'picture', true)) ?>" alt="<?= get_the_title($post->ID) ?>" /></td>
 	<td><dl>
 <?php else: ?>
 	<td colspan="2"><dl>
