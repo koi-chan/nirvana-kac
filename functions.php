@@ -60,8 +60,12 @@ function member_profile($output_name = false) {
 </tr>
 <?php endif; ?>
 <tr>
-<?php /*	<td><?php the_post_thumbnail(); ?><img src="" /></td> */ ?>
+<?php if(get_post_meta($post->ID, 'picture', true)): ?>
+	<td class="thumbnail"><img src="<?= wp_get_attachment_url(get_post_meta($post->ID, 'picture', true)) ?>" /></td>
+	<td><dl>
+<?php else: ?>
 	<td colspan="2"><dl>
+<?php endif; ?>
 		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?><dt>役職</dt>
 		<dd><?php echo get_post_meta($post->ID, 'position', true); ?></dd><?php endif; ?>
 
