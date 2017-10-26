@@ -2,7 +2,11 @@
 function wp_loop($query_args) {
 $loop = new WP_Query($query_args);
 
-if ( $loop->have_posts() ) while ( $loop->have_posts() ) : $loop->the_post();
+if ( $loop->have_posts() ) :
+	if ( $query_args['meta_value'] == 'なし' ) {
+		echo "<h2>".strtoupper($query_args['tax_query'][0]['terms'])."</h2>";
+	}
+while ( $loop->have_posts() ) : $loop->the_post();
 ?>
 
 				<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -40,6 +44,7 @@ if ( $loop->have_posts() ) while ( $loop->have_posts() ) : $loop->the_post();
 
 <?php
 endwhile; // end of the loop.
+endif;
 wp_reset_postdata();
 } // function wp_loop
 ?>

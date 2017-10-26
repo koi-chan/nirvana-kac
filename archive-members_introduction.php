@@ -37,7 +37,7 @@ $query_args['tax_query'] = array(
 	)
 );
 foreach(array('r4', 'r3', 'r2', 'r1') as $value) {
-	echo "<h2>".strtoupper($value)."</h2>";
+/*	echo "<h2>".strtoupper($value)."</h2>"; */
 	$query_args['tax_query'][0]['terms'] = $value;
 	wp_loop($query_args);
 }
