@@ -32,7 +32,7 @@ foreach(array('主将', '副将', '主務', '副務') as $value) {
 $query_args['meta_value'] = 'なし';
 $query_args['tax_query'] = array(
 	array(
-		'taxonomy' => 'category',
+		'taxonomy' => 'members_introduction_taxonomy',
 		'field' => 'name',
 	)
 );

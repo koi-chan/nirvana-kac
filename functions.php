@@ -4,24 +4,23 @@ function theme_enqueue_styles() {
 	wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
 }
 
-
-add_action( 'init', 'register_cpt_members_introduction' );
-
+# 部員紹介のカスタム投稿タイプ・カスタムタクソノミーを設定する
+add_action('init', 'register_cpt_members_introduction');
 function register_cpt_members_introduction() {
 
 	$labels = array(
-		'name' => __( '部員紹介', 'members_introduction' ),
-		'singular_name' => __( '部員紹介', 'members_introduction' ),
-		'add_new' => __( '新規追加', 'members_introduction' ),
-		'add_new_item' => __( '部員を追加する', 'members_introduction' ),
-		'edit_item' => __( '部員紹介編集', 'members_introduction' ),
-		'new_item' => __( '新規', 'members_introduction' ),
-		'view_item' => __( '閲覧', 'members_introduction' ),
-		'search_items' => __( '部員検索', 'members_introduction' ),
-		'not_found' => __( '部員が見つかりません', 'members_introduction' ),
-		'not_found_in_trash' => __( 'ゴミ箱にはありません', 'members_introduction' ),
-		'parent_item_colon' => __( '親メンバー', 'members_introduction' ),
-		'menu_name' => __( '部員紹介', 'members_introduction' ),
+		'name' => __('部員紹介', 'members_introduction'),
+		'singular_name' => __('部員紹介', 'members_introduction'),
+		'add_new' => __('新規追加', 'members_introduction'),
+		'add_new_item' => __('部員を追加する', 'members_introduction'),
+		'edit_item' => __('部員紹介編集', 'members_introduction'),
+		'new_item' => __('新規', 'members_introduction'),
+		'view_item' => __('閲覧', 'members_introduction'),
+		'search_items' => __('部員検索', 'members_introduction'),
+		'not_found' => __('部員が見つかりません', 'members_introduction'),
+		'not_found_in_trash' => __('ゴミ箱にはありません', 'members_introduction'),
+		'parent_item_colon' => __('親メンバー', 'members_introduction'),
+		'menu_name' => __('部員紹介', 'members_introduction'),
 	);
 
 	$args = array(
@@ -34,7 +33,7 @@ function register_cpt_members_introduction() {
 			'author',
 			'revisions'
 		),
-		'taxonomies' => array( 'members_introduction_taxonomy' ),
+		'taxonomies' => array('members_introduction_taxonomy'),
 
 		'public' => true,
 		'show_ui' => true,
@@ -50,23 +49,42 @@ function register_cpt_members_introduction() {
 	);
 
 	$args_taxonomy = array(
-		'members_introduction',
-		array(
-			'label' => '部内学年',
-			'labels' => array(
-				'all_items' => '学年・身分一覧',
-				'add_new_item' => '新規学年・身分を追加'
-			),
-			'hierarchical' => true
-		)
+		'labels' => array(
+			'name' => __('学年・身分', 'members_introduction_taxonomy'),
+			'all_items' => __('学年・身分一覧', 'members_introduction_taxonomy'),
+			'add_new_item' => __('新規学年・身分を追加', 'members_introduction_taxonomy'),
+		),
+		'hierarchical' => true,
+		'show_admin_column' => true,
+		'public' => true
 	);
 
-	register_post_type( 'members_introduction', $args );
-	register_taxonomy( 'members_introduction_taxonomy', $args_taxonomy );
+	register_post_type('members_introduction', $args);
+	register_taxonomy('members_introduction_taxonomy', 'members_introduction', $args_taxonomy);
 }
 
 add_theme_support('post-thumbnails', array('members_introduction'));
 set_post_thumbnail_size(200, 200, true);
+
+
+# 部員紹介の投稿記事一覧で、カスタムタクソノミーでの絞り込み検索が出来るようにする
+add_action('restrict_manage_posts', 'add_post_taxonomy_restrict_filter');
+function add_post_taxonomy_restrict_filter() {
+	global $post_type;
+	if('members_introduction' == $post_type):
+
+		$add_taxonomy = $_GET['members_introduction_taxonomy'];
+		$terms = get_terms('members_introduction_taxonomy');
+?>
+<select name="members_introduction_taxonomy">
+	<option value="">すべての学年・身分</option>
+	<?php foreach($terms as $term): ?>
+	<option value="<?= $term->slug; ?>"<?php if($add_taxonomy == $term->slug) echo ' selected="selected"'; ?>><?= $term->name; ?></option>
+	<?php endforeach; ?>
+</select>
+<?php
+	endif;
+}
 
 
 # $output_name [Boolean] 表に名前を出力するか
