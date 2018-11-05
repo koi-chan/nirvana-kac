@@ -34,7 +34,7 @@ function register_cpt_members_introduction() {
 			'author',
 			'revisions'
 		),
-		'taxonomies' => array( 'category' ),
+		'taxonomies' => array( 'members_introduction_taxonomy' ),
 
 		'public' => true,
 		'show_ui' => true,
@@ -49,11 +49,25 @@ function register_cpt_members_introduction() {
 		'capability_type' => 'post'
 	);
 
+	$args_taxonomy = array(
+		'members_introduction',
+		array(
+			'label' => '部内学年',
+			'labels' => array(
+				'all_items' => '学年・身分一覧',
+				'add_new_item' => '新規学年・身分を追加'
+			),
+			'hierarchical' => true
+		)
+	);
+
 	register_post_type( 'members_introduction', $args );
+	register_taxonomy( 'members_introduction_taxonomy', $args_taxonomy );
 }
 
 add_theme_support('post-thumbnails', array('members_introduction'));
 set_post_thumbnail_size(200, 200, true);
+
 
 # $output_name [Boolean] 表に名前を出力するか
 function member_profile($output_name = false) {
@@ -72,13 +86,43 @@ function member_profile($output_name = false) {
 <?php else: ?>
 	<td colspan="2"><dl>
 <?php endif; ?>
-		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?><dt>役職</dt>
-		<dd><?= get_post_meta($post->ID, 'position', true); ?></dd><?php endif; ?>
-
-		<dt>学部・学年</dt>
+<?php if ( $output_name ) : ?>
+		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?>
+		<dt>部内学年</dt>
 		<dd>
-		<?= get_post_meta($post->ID, 'gakubu', true); ?>
-		<?= get_post_meta($post->ID, 'grade', true); ?>年
+		<?= strtoupper(get_the_category($post->ID)[0]->cat_name); ?>
+		</dd>
+		<?php endif; ?>
+<?php else : ?>
+		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?>
+		<dt>役職</dt>
+		<dd>
+		<?= get_post_meta($post->ID, 'position', true); ?>
+		</dd>
+		<?php endif; ?>
+
+		<dt>部内学年</dt>
+		<dd>
+		<?= strtoupper(get_the_category($post->ID)[0]->cat_name); ?>
+		</dd>
+<?php endif; ?>
+
+		<dt>大学学籍</dt>
+		<dd>
+		<?php
+			$gakubu = get_post_meta($post->ID, 'gakubu', true);
+			if ( $gakubu == '自由記述' ) $gakubu = get_post_meta($post->ID, 'gakubu_freewriting', true);
+			echo $gakubu;
+		?>
+		<?php
+			$grade = get_post_meta($post->ID, 'grade', true);
+			if ( $grade == 0 ) $grade = get_grade(
+				get_post_meta($post->ID, 'enter_year', true),
+				get_post_meta($post->ID, 'enter_semester', true),
+				get_post_meta($post->ID, 'stay_count', true)
+			);
+			echo $grade;
+		?>年
 		</dd>
 
 		<dt>趣味</dt>
@@ -97,5 +141,53 @@ function member_profile($output_name = false) {
 </tr>
 </table>
 <?php
+}
+
+
+# 入学年度と現在の日付から現在の学年を求める
+# param [Integer] $year 入学年度
+# param [String] $semester_text 入学季節(学期)
+# param [Integer] $stay 留年・留学回数
+# return [Integer]
+function get_grade($year, $semester_text, $stay = 0) {
+	$today = getdate();
+
+	# 入力値チェック
+	# 入学年度は数字で、かつ今年よりも小さい必要がある
+	if ( !is_numeric($year) || $year > $today['year'] ) {
+		return -1;
+	}
+	# 入学季節(学期)は '春', '秋' のみ許容する
+	# 問題ない値だった場合、処理用の値にする
+	switch ( $semester_text ) {
+	case '春':
+		$semester = true;
+		break;
+	case '秋':
+		$semester = false;
+		break;
+	default:
+		return -1;
+	}
+	# 留年・留学回数は数字で、かつ0回以上8回以下である必要がある
+	if ( !is_numeric($stay) || $stay < 0 || $stay > 8 ) {
+		return -1;
+	}
+
+	# 学年を計算する
+	if ( $today['mon'] < 4 ) {
+		# 年は越したが年度は前年のまま
+		$grade = $today['year'] - $year;
+	} elseif ( $today['mon'] > 8 ) {
+		# 9月以降は入学学期に限らず +1 年生
+		$grade = $today['year'] - $year + 1;
+	} else {
+		$grade = $today['year'] - $year;
+		# 4～8 月は、春入学の場合 +1 する
+		if ( $semester ) $grade++;
+	}
+
+	# 留年・留学して学年が遅れた場合
+	return $grade - $stay;
 }
 ?>
