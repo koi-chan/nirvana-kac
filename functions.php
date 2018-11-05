@@ -34,7 +34,7 @@ function register_cpt_members_introduction() {
 			'author',
 			'revisions'
 		),
-		'taxonomies' => array( 'category' ),
+		'taxonomies' => array( 'members_introduction_taxonomy' ),
 
 		'public' => true,
 		'show_ui' => true,
@@ -49,7 +49,20 @@ function register_cpt_members_introduction() {
 		'capability_type' => 'post'
 	);
 
+	$args_taxonomy = array(
+		'members_introduction',
+		array(
+			'label' => '部内学年',
+			'labels' => array(
+				'all_items' => '学年・身分一覧',
+				'add_new_item' => '新規学年・身分を追加'
+			),
+			'hierarchical' => false
+		)
+	);
+
 	register_post_type( 'members_introduction', $args );
+	register_taxonomy( 'members_introduction_taxonomy', $args_taxonomy );
 }
 
 add_theme_support('post-thumbnails', array('members_introduction'));
