@@ -108,7 +108,7 @@ function member_profile($output_name = false) {
 		<?php if(get_post_meta($post->ID, 'position', true) != 'なし'): ?>
 		<dt>部内学年</dt>
 		<dd>
-		<?= strtoupper(get_the_category($post->ID)[0]->cat_name); ?>
+		<?= strtoupper(get_the_terms($post->ID, 'members_introduction_taxonomy')[0]->name); ?>
 		</dd>
 		<?php endif; ?>
 <?php else : ?>
