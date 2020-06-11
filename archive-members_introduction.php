@@ -3,12 +3,12 @@
  * The Template for displaying all single posts.
  *
  * @package Cryout Creations
- * @subpackage nirvana
- * @since nirvana 0.5
+ * @subpackage Nirvana
+ * @since Nirvana 1.0
  */
 require_once 'archive-members_introduction-functions.php';
 
-get_header();?>
+get_header(); ?>
 
 		<section id="container" class="<?php echo nirvana_get_layout_class(); ?>">
 			<div id="content" role="main">
